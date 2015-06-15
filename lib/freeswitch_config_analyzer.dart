@@ -4,6 +4,7 @@
 /// The freeswitch_config_analyzer library.
 library freeswitch_config_analyzer;
 
+import 'dart:collection';
 import 'dart:io';
 
 import 'package:path/path.dart' as libpath;
@@ -17,6 +18,7 @@ Map<String, String> variables = {r"$${sounds_dir}": '/usr/local/freeswitch/sound
 List<String> skipFiles = ['record_ivr.xml', 'demo_ivr.xml'];
 void validateIvrMenus(String path) {
   Directory directory = new Directory(path);
+  List<IvrFile> models = new List<IvrFile>();
   for (FileSystemEntity entity in directory.listSync()) {
     File file = entity as File;
     if (file != null && file.path.endsWith('.xml') && !skipFiles.any((skip) => file.path.endsWith(skip))) {
@@ -24,10 +26,28 @@ void validateIvrMenus(String path) {
       String content = file.readAsStringSync();
       XmlDocument tree = parse(content);
       IvrFile model = XmlToIvrModel(tree, receptionId);
-      if (model.errors.isNotEmpty) {
-        print('---- Errors in file: "${file.path}" ----');
-        model.errors.forEach(print);
+      model.filePath = file.path;
+      models.add(model);
+    }
+  }
+
+  //Look for multiple menus with the same name.
+  HashMap<String, String> menuNames = new HashMap<String, String>();
+  for(IvrFile model in models) {
+    for(IvrMenu menu in model.menus) {
+      if(menuNames.containsKey(menu.name)) {
+        print('There exists multiple menus with the name: "${menu.name}" File: "${model.filePath}" AND File: "${menuNames[menu.name]}"');
+      } else {
+        menuNames[menu.name] = model.filePath;
       }
+    }
+  }
+
+  //Print Errors
+  for(IvrFile model in models) {
+    if (model.errors.isNotEmpty) {
+      print('---- Errors in file: "${model.filePath}" ----');
+      model.errors.forEach(print);
     }
   }
 }
@@ -69,6 +89,7 @@ IvrFile XmlToIvrModel(XmlDocument doc, String filename) {
     }
   }
 
+  //Check if references to other IvrMenus is valid.
   for(IvrMenu menu in model.menus) {
     Iterable<IvrEntry> menuSubEntries = menu.entries.where((IvrEntry entry) => entry.action == 'menu-sub');
     for(IvrEntry entry in menuSubEntries) {

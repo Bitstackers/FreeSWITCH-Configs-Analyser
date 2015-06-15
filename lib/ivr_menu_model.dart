@@ -1,6 +1,7 @@
 library model;
 
 class IvrFile {
+  String filePath;
   List<IvrMenu> menus = new List<IvrMenu>();
   List<String> _errors = new List<String>();
 

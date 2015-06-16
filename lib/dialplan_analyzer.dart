@@ -17,11 +17,13 @@ void validateDialplans(String path) {
     }
   }
 
+  int errorCount = 0;
   //Look for multiple menus with the same name.
   HashMap<String, String> menuNames = new HashMap<String, String>();
   for(DialplanFile model in receptionDialplans) {
     for(Extension extension in model.extensions) {
       if(menuNames.containsKey(extension.name)) {
+        errorCount += 1;
         print('There exists multiple extensions with the name: "${extension.name}" File: "${model.filePath}" AND File: "${menuNames[extension.name]}"');
       } else {
         menuNames[extension.name] = model.filePath;
@@ -32,18 +34,24 @@ void validateDialplans(String path) {
   //Print Errors
   for(DialplanFile model in receptionDialplans) {
     if (model.allErrors.isNotEmpty) {
+      errorCount += model.allErrors.length;
       print('---- Errors in file: "${model.filePath}" ----');
       model.allErrors.forEach(print);
     }
   }
+
+  print('Number of Dialplan Errors: $errorCount');
 }
 
 void _validateDialplanFile(DialplanFile dialplan, String filename) {
   //Check if the extension name matches the filename.
   for(Extension extension in dialplan.extensions) {
-    if (!extension.name.startsWith(filename)) {
+    if (!extension.name.startsWith('reception_$filename')) {
       extension.errors.add('Extension name does not match file name. Extension: ${extension.name}');
     }
   }
+}
+
+void validateExtension(Extension extension) {
 
 }

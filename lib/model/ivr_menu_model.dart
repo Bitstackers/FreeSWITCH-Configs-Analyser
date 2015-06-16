@@ -1,18 +1,12 @@
-library model;
-
-import 'package:xml/xml.dart';
-
-import 'freeswitch_config_analyzer.dart';
+part of model;
 
 class IvrFile {
   String filePath;
   List<IvrMenu> menus = new List<IvrMenu>();
-  List<String> _errors = new List<String>();
+  List<String> errors = new List<String>();
 
-  void addError(String error) => _errors.add(error);
-
-  List<String> get errors {
-    var list = new List.from(_errors);
+  List<String> get allErrors {
+    var list = new List.from(errors);
     for (IvrMenu menu in menus) {
       list.addAll(menu.errors);
       for (IvrEntry entry in menu.entries) {
@@ -26,14 +20,14 @@ class IvrFile {
   IvrFile.fromXml(XmlDocument xml) {
     //Checks there is only one top Element
     if (xml.children.where(isNotComment).length != 1) {
-      addError('It should start with just one include node.');
+      errors.add('It should start with just one include node.');
       return;
     }
 
     //Checks the first element is an include element
     XmlElement includeNode = xml.children.where(isNotComment).first;
     if (includeNode.name.toString() != 'include') {
-      addError('It should start with a "include" node. "${includeNode.name}" != "include"');
+      errors.add('It should start with a "include" node. "${includeNode.name}" != "include"');
       return;
     }
 
@@ -41,13 +35,13 @@ class IvrFile {
       if (node is XmlElement) {
         XmlElement menuElement = node;
         if (menuElement.name.toString() != 'menu') {
-          addError('Inside its include node, should only be menu nodes. ${menuElement.name.toString()} != "${menuElement.name.toString()}"');
+          errors.add('Inside its include node, should only be menu nodes. ${menuElement.name.toString()} != "${menuElement.name.toString()}"');
         } else {
           menus.add(new IvrMenu.fromXml(node));
         }
       } else if (node is XmlText && node.text.trim().length > 0) {
         //This might happend if there are a line-break.
-        addError('Beside the menus are there other stuff than XmlElements Type:(${node.runtimeType}) Content:[${node}]');
+        errors.add('Beside the menus are there other stuff than XmlElements Type:(${node.runtimeType}) Content:[${node}]');
       }
     }
   }

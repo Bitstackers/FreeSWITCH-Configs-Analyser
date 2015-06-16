@@ -31,9 +31,9 @@ void validateIvrMenus(String path) {
 
   //Print Errors
   for(IvrFile model in models) {
-    if (model.errors.isNotEmpty) {
+    if (model.allErrors.isNotEmpty) {
       print('---- Errors in file: "${model.filePath}" ----');
-      model.errors.forEach(print);
+      model.allErrors.forEach(print);
     }
   }
 }

@@ -8,7 +8,7 @@ import 'dart:io';
 import 'package:path/path.dart' as libpath;
 import 'package:xml/xml.dart';
 
-import 'ivr_menu_model.dart';
+import 'model.dart';
 
 part 'ivr_analyzer.dart';
 part 'dialplan_analyzer.dart';

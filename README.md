@@ -2,13 +2,13 @@
 
 ##Ivr Checks
 
-* File must start with a single <include>.
-* <Include> may only contains <menu>.
-* <menu> must have a unique name.
-* <menu> name should start with the reception number.
-* <menu> may only contain <entry>.
-* <entry> must have unique digits within a menu.
-* <entry> should have unique param within a menu.
+* File must start with a single &lt;include&gt;.
+* &lt;Include&gt; may only contains &lt;menu&gt;.
+* &lt;menu&gt; must have a unique name.
+* &lt;menu&gt; name should start with the reception number.
+* &lt;menu&gt; may only contain &lt;entry&gt;.
+* &lt;entry&gt; must have unique digits within a menu.
+* &lt;entry&gt; should have unique param within a menu.
 * If entry' acttion is menu-sub, then there is checked if the reference menu exists.
-* <entry> action is checked from a list of known actions.
-* <menu> and <entry> attributes is checked from a list of expected attributes.
+* &lt;entry&gt; action is checked from a list of known actions.
+* &lt;menu&gt; and &lt;entry&gt; attributes is checked from a list of expected attributes.

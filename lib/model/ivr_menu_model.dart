@@ -34,8 +34,9 @@ class IvrFile {
     for (XmlNode node in includeNode.children.where(isNotComment)) {
       if (node is XmlElement) {
         XmlElement menuElement = node;
-        if (menuElement.name.toString() != 'menu') {
-          errors.add('Inside its include node, should only be menu nodes. ${menuElement.name.toString()} != "${menuElement.name.toString()}"');
+        String elementName = 'menu';
+        if (menuElement.name.toString() != elementName) {
+          errors.add('Inside its include node, should only be $elementName nodes. ${menuElement.name.toString()} != "$elementName"');
         } else {
           menus.add(new IvrMenu.fromXml(node));
         }

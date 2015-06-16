@@ -13,7 +13,7 @@ void validateIvrMenus(String path) {
       IvrFile model = new IvrFile.fromXml(tree);
       models.add(model);
       model.filePath = file.path;
-      _validateModel(model, filename);
+      _validateIvrFile(model, filename);
     }
   }
 
@@ -41,7 +41,7 @@ void validateIvrMenus(String path) {
 /**
  * Validates an IVR file.
  */
-void _validateModel(IvrFile model, String filename) {
+void _validateIvrFile(IvrFile model, String filename) {
   //Check if the menu name matches the filename.
   for(IvrMenu menu in model.menus) {
     if (!menu.name.startsWith(filename)) {

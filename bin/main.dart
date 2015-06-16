@@ -9,6 +9,7 @@ main(List<String> arguments) {
 
   print('Analysing...');
   freeswitch_config_analyzer.validateIvrMenus(path.join(freeswitchpath, 'conf/ivr_menus'));
+  freeswitch_config_analyzer.validateDialplans(path.join(freeswitchpath, 'conf/dialplan'));
 
   print('Done');
 }

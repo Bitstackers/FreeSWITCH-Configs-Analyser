@@ -1,8 +1,6 @@
 part of model;
 
 class Freeswitch {
-  String confPath;
-
   List<IvrFile> ivrFiles;
   List<DialplanFile> dialplanFiles;
 

@@ -8,12 +8,11 @@ import 'dart:io';
 import 'package:path/path.dart' as libpath;
 import 'package:xml/xml.dart';
 
+import 'conf.dart';
 import 'model.dart';
 
 part 'ivr_analyzer.dart';
 part 'dialplan_analyzer.dart';
-
-Map<String, String> variables = {r"$${sounds_dir}": '/usr/local/freeswitch/sounds'};
 
 bool isNotComment(XmlNode node) => node is! XmlComment;
 
@@ -26,9 +25,9 @@ bool fileExists(String path) {
 
 String unfoldVariables(String text) {
   String unfoldedText = text;
-  for (String key in variables.keys) {
+  for (String key in hardcodedVariables.keys) {
     if (unfoldedText.contains(key)) {
-      String value = variables[key];
+      String value = hardcodedVariables[key];
       unfoldedText = unfoldedText.replaceAll(key, value);
     }
   }

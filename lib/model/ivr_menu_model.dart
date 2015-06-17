@@ -6,14 +6,8 @@ class IvrFile {
   List<String> errors = new List<String>();
 
   List<String> get allErrors {
-    var list = new List.from(errors);
-    for (IvrMenu menu in menus) {
-      list.addAll(menu.errors);
-      for (IvrEntry entry in menu.entries) {
-        list.addAll(entry.errors);
-      }
-    }
-
+    List<String> list = new List<String>.from(errors);
+    menus.forEach((e) => list.addAll(e.allErrors));
     return list;
   }
 
@@ -60,6 +54,12 @@ class IvrMenu {
   List<IvrEntry> entries = new List<IvrEntry>();
   List<String> errors = new List<String>();
 
+  List<String> get allErrors {
+    List<String> list = new List<String>.from(errors);
+    entries.forEach((e) => list.addAll(e.allErrors));
+    return list;
+  }
+
   IvrMenu.fromXml(XmlElement xml) {
     if (xml.name.toString() != 'menu') {
       errors.add('File contains elements other than "menu". Elementname: "${xml.name}"');
@@ -90,6 +90,8 @@ class IvrEntry {
   String param;
 
   List<String> errors = new List<String>();
+
+  List<String> get allErrors => new List<String>.from(errors);
 
   IvrEntry.fromXml(XmlElement xml) {
     if (xml.name.toString() != 'entry') {

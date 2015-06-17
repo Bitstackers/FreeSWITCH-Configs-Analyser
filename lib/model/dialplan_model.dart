@@ -21,8 +21,7 @@ class DialplanFile {
     //Checks the first element is an include element
     XmlElement includeNode = xml.children.where(isNotComment).first;
     if (includeNode.name.toString() != 'include') {
-      errors.add(
-          'It should start with a "include" node. "${includeNode.name}" != "include"');
+      errors.add('It should start with a "include" node. "${includeNode.name}" != "include"');
       return;
     }
 
@@ -88,6 +87,11 @@ class Condition {
   }
 
   Condition.fromXml(XmlElement xml) {
+    String elementName = 'condition';
+    if (xml.name.toString() != elementName) {
+      errors.add('Extension contains elements other than "$elementName". Elementname: "${xml.name}"');
+      return;
+    }
     this.field = extractAttributeValue(xml, 'field', errors);
     this.expression = extractAttributeValue(xml, 'expression', errors);
     this.wday = extractAttributeValue(xml, 'wday', errors);
@@ -122,6 +126,12 @@ class Action {
   List<String> get allErrors => errors;
 
   Action.fromXml(XmlElement xml) {
+    this.application = extractAttributeValue(xml, 'application', errors);
+    this.data = extractAttributeValue(xml, 'data', errors);
 
+    List<String> knownAttributes = ['data', 'application'];
+    xml.attributes
+      .where((XmlAttribute attribute) => !knownAttributes.contains(attribute.name.toString()))
+      .forEach((XmlAttribute attribute) => errors.add('Condition $xml has unknown attribute: ${attribute}'));
   }
 }

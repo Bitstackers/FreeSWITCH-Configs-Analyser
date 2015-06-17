@@ -70,10 +70,17 @@ void validateExtension(Extension extension, DialplanFile currentFile, Freeswitch
 }
 
 void validateCondition(Condition condition, DialplanFile currentFile, Freeswitch model) {
+  String receptionNumber = libpath.basenameWithoutExtension(currentFile.filePath);
+  if(condition.field != null && condition.field == 'destination_number' && condition.expression != '^$receptionNumber\$') {
+    condition.errors.add('Conditions destination_number does not match the file name. expression: ${condition.expression}');
+  }
+
+  //Validate Wday
   if(condition.wday != null && !validWday(condition.wday)) {
     condition.errors.add('wday has an error: wday="${condition.wday}"');
   }
 
+  //Validate time-of-day
   if (condition.timeOfDay != null && !validTimeOfDay(condition.timeOfDay)) {
     condition.errors.add('time-of-day has an error: time-of-day="${condition.timeOfDay}"');
   }

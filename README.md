@@ -20,6 +20,7 @@
 * &lt;extension&gt; must have a unique name.
 * &lt;extension&gt; name should start with "reception_" followed by the reception number.
 * &lt;extension&gt; may only contain &lt;condition&gt;.
+* &lt;condition&gt; destination_number should match filename.
 * &lt;condition&gt; may only contain &lt;condition&gt; or &lt;action&gt;.
 * &lt;condition&gt; time-of-day, wday gets checked.
 * &lt;action&gt; IVR gets checked if it exists.

@@ -52,7 +52,7 @@ void _validateDialplanFile(DialplanFile dialplan, Freeswitch model) {
 
   //Check if the extension name matches the filename.
   for (Extension extension in dialplan.extensions) {
-    if (!extension.name.startsWith('reception_$filename')) {
+    if (!extension.name.startsWith('$filename')) {
       extension.errors.add('Extension name does not match file name. Extension: ${extension.name}');
     }
   }
@@ -71,8 +71,10 @@ void validateExtension(Extension extension, DialplanFile currentFile, Freeswitch
 
 void validateCondition(Condition condition, DialplanFile currentFile, Freeswitch model) {
   String receptionNumber = libpath.basenameWithoutExtension(currentFile.filePath);
-  if(condition.field != null && condition.field == 'destination_number' && condition.expression != '^$receptionNumber\$') {
-    condition.errors.add('Conditions destination_number does not match the file name. expression: ${condition.expression}');
+
+  if(condition.field != null && condition.field == 'destination_number'
+      && !(condition.expression != '^${receptionNumber}\$-open' || condition.expression != '^${receptionNumber}\$-closed')) {
+    condition.errors.add('Conditions destination_number does not match the file name. expression: "${condition.expression}" != $receptionNumber');
   }
 
   //Validate Wday
@@ -90,7 +92,7 @@ void validateCondition(Condition condition, DialplanFile currentFile, Freeswitch
 }
 
 void validateAction(Action action, DialplanFile currentFile, Freeswitch model) {
-  List<String> knownApplication = ['answer', 'hangup', 'ivr', 'log', 'playback', 'set', 'transfer', 'voicemail'];
+  List<String> knownApplication = ['answer', 'hangup', 'ivr', 'log', 'playback', 'set', 'transfer', 'voicemail', 'sleep'];
   if(!knownApplication.contains(action.application)) {
     action.errors.add('Action has unknown application: "${action.application}"');
   }
@@ -117,7 +119,8 @@ void validateAction(Action action, DialplanFile currentFile, Freeswitch model) {
       //Check if extension exists
       break;
     case 'voicemail':
-      if(!action.data.startsWith(r'default $${domain} vm-${destination_number}')) {
+      //TODO validate againts voicemail accounts.
+      if(!action.data.startsWith(r'default $${domain} vm-')) {
         action.errors.add('Voicemail action has unknown data format. "${action.data}"');
       }
       break;

@@ -16,6 +16,8 @@ part 'dialplan_analyzer.dart';
 
 bool isNotComment(XmlNode node) => node is! XmlComment;
 
+bool isElement (XmlNode node) => node is XmlElement;
+
 bool fileExists(String path) {
   String unfoldedPath = unfoldVariables(path);
 

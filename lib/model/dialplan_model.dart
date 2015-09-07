@@ -21,11 +21,22 @@ class DialplanFile {
     //Checks the first element is an include element
     XmlElement includeNode = xml.children.where(isNotComment).first;
     if (includeNode.name.toString() != 'include') {
-      errors.add('It should start with a "include" node. "${includeNode.name}" != "include"');
+      errors.add('It should start with an "include" node. "${includeNode.name}" != "include"');
       return;
     }
 
-    for (XmlNode node in includeNode.children.where(isNotComment)) {
+    //Checks the next element is a context element
+    XmlElement contextNode =
+        includeNode.children
+        .where(isElement)
+        .where(isNotComment).first;
+
+    if (contextNode.name.toString() != 'context') {
+      errors.add('It should follow with a "context" node. "${contextNode.name}" != "context"');
+      return;
+    }
+
+    for (XmlNode node in contextNode.children.where(isNotComment)) {
       if (node is XmlElement) {
         XmlElement menuElement = node;
         String elementName = 'extension';
@@ -108,6 +119,9 @@ class Condition {
         conditions.add(new Condition.fromXml(element));
 
       } else if(element.name.toString() == 'action') {
+        actions.add(new Action.fromXml(element));
+
+      } else if(element.name.toString() == 'anti-action') {
         actions.add(new Action.fromXml(element));
 
       } else {
